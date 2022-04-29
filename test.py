@@ -1,24 +1,21 @@
 from time import sleep
+import timeout_decorator
 import random
 import pyautogui
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import warnings
-warnings.filterwarnings("ignore",category=DeprecationWarning)
 
-# import requests
-#
-# r = requests.get('http://tiqu.ipidea.io:2330/getProxyIp?num=100&return_type=txt&lb=1&sb=0&flow=1&regions=us&protocol=http')
-# proxy = r.text.split('\r\n')[0]
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 options = webdriver.ChromeOptions()
 # 设置代理
 
 options.add_extension('Buste1.3.1.0.crx')
-proxy = ['socks5://192.168.31.225:5000']
-proxy = random.choice(proxy)
-print(proxy)
-options.add_argument('--proxy-server=%s' % proxy)
+# proxy = '127.0.0.1:24000'
+# print(proxy)
+# options.add_argument('--proxy-server=%s' % proxy)
 driver = webdriver.Chrome('chromedriver.exe', options=options)
 
 driver.maximize_window()
@@ -138,9 +135,10 @@ def 邮箱注册总():
     邮箱后台登录()
     邮箱注册(邮箱账号, 邮箱密码)
     邮箱账号 += '@wleizz.com'
+    driver.quit()
     return 邮箱账号, 邮箱密码
 
-
+@timeout_decorator.timeout(5)
 def mouseClick(img):
     while True:
         location = pyautogui.locateCenterOnScreen(img, confidence=0.9)
@@ -182,20 +180,31 @@ def Steam验证码循环点击():
             i += 1
         mouseClick(点击)
         i = 0
-        sleep(2)
+        sleep(4)
 
 
 def Steam注册(邮箱账号):
-    driver.get("https://store.steampowered.com/join/")
-    driver.find_element(By.CSS_SELECTOR,
-                        '#email').send_keys(
+    options2 = webdriver.ChromeOptions()
+    options2.add_extension('Buste1.3.1.0.crx')
+    proxy = '127.0.0.1:24000'
+    print(proxy)
+    options2.add_argument('--proxy-server=%s' % proxy)
+    driver2 = webdriver.Chrome('chromedriver.exe', options=options2)
+
+    driver2.maximize_window()
+    driver2.get('chrome://settings/clearBrowserData')
+    driver2.find_element_by_xpath('//settings-ui').send_keys(Keys.ENTER)
+    driver2.get("https://store.steampowered.com/join/")
+    driver2.find_element(By.CSS_SELECTOR,
+                         '#email').send_keys(
         邮箱账号)
-    driver.find_element(By.CSS_SELECTOR,
-                        '#reenter_email').send_keys(
+    driver2.find_element(By.CSS_SELECTOR,
+                         '#reenter_email').send_keys(
         邮箱账号)
-    driver.find_element(By.CSS_SELECTOR,
-                        "#i_agree_check").click()
+    driver2.find_element(By.CSS_SELECTOR,
+                         "#i_agree_check").click()
     Steam验证码循环点击()
+    切换ip(driver2)
 
 
 def 邮箱登录(邮箱账号, 邮箱密码):
@@ -213,7 +222,17 @@ def 邮箱登录(邮箱账号, 邮箱密码):
                         "#rcmloginsubmit").click()
 
 
+def 切换ip(driver):
+    js = 'window.open("http://127.0.0.1:22999/");'
+    driver.execute_script(js)
+    drivers = driver.window_handles
+    driver.switch_to.window(drivers[-1])
+    driver.find_element(By.CSS_SELECTOR,
+                        "#react_root > div > div:nth-child(4) > div.page_body.vbox > div > div.panels > div.proxies.proxies_wrapper > div.main_panel.vbox.cp_panel.proxies_panel > div.main_panel.vbox > div > div:nth-child(1) > div > div.ReactVirtualized__Grid.ReactVirtualized__Table__Grid > div > div > div:nth-child(2) > span > div > div.action_icon.cp_icon.refresh").click()
+
+
 if __name__ == "__main__":
     邮箱账号, 邮箱密码 = 邮箱注册总()
     Steam注册(邮箱账号)
     # 邮箱登录(邮箱账号, 邮箱密码)
+
