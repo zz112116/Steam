@@ -6,6 +6,7 @@ from time import sleep
 from selenium import webdriver
 
 from adspower接口调用 import 判断账号是否打开, 关闭某账号浏览器, 打开某账号浏览器, 创建账号, 删除账号
+from images.杂七杂八 import 日志写入
 from steam邮箱页面a import 邮箱页面操作
 from 成功之后 import 成功之后
 from 新建邮箱 import 邮箱注册, 邮箱提取
@@ -13,7 +14,7 @@ from 登录Steam import 登录Steam
 
 
 if __name__ == "__main__":
-    print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
+    日志写入('开始：')
     i = input('1:创建账号2：不创建')
     if i == '1':
         账号 = 创建账号()
@@ -61,7 +62,7 @@ if __name__ == "__main__":
             print(是否成功)
             判断次数 += 1
             continue
-    print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())))
+    日志写入('结束：')
     print('成功次数' + str(成功次数))
     关闭某账号浏览器(账号)
     sleep(3)
