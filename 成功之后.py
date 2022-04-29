@@ -61,16 +61,19 @@ def 点击Steam链接(driver):
 
 def 邮箱登录点击邮件(driver):
     while True:
+        while True:
+            try:
+                循环等待邮箱列表(driver)
+                break
+            except func_timeout.exceptions.FunctionTimedOut:
+                print('邮箱列表等待超时')
+                driver.refresh()
         try:
-            循环等待邮箱列表(driver)
+            点击Steam链接(driver)
             break
         except func_timeout.exceptions.FunctionTimedOut:
-            print('邮箱列表等待超时')
+            print('点击Steam链接失败')
             driver.refresh()
-    try:
-        点击Steam链接(driver)
-    except func_timeout.exceptions.FunctionTimedOut:
-        print('点击Steam链接失败')
 
 
 def 退出邮箱登录(driver):
